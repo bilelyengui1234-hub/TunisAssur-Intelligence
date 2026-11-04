@@ -1,0 +1,25 @@
+BranchID,BranchName,Governorate,City,OpeningDate
+BR01,Agence Tunis,Tunis,Tunis,2013-08-04
+BR02,Agence Ariana,Ariana,Ariana,2016-02-03
+BR03,Agence Ben Arous,Ben Arous,Ben Arous,2011-10-28
+BR04,Agence Manouba,Manouba,Manouba,2005-09-29
+BR05,Agence Nabeul,Nabeul,Nabeul,2014-10-24
+BR06,Agence Zaghouan,Zaghouan,Zaghouan,2005-05-05
+BR07,Agence Bizerte,Bizerte,Bizerte,2009-09-14
+BR08,Agence Beja,Beja,Beja,2019-04-08
+BR09,Agence Jendouba,Jendouba,Jendouba,2012-11-23
+BR10,Agence Le Kef,Le Kef,Le Kef,2014-12-25
+BR11,Agence Siliana,Siliana,Siliana,2021-05-26
+BR12,Agence Sousse,Sousse,Sousse,2008-10-27
+BR13,Agence Monastir,Monastir,Monastir,2019-05-23
+BR14,Agence Mahdia,Mahdia,Mahdia,2017-10-12
+BR15,Agence Sfax,Sfax,Sfax,2011-06-18
+BR16,Agence Kairouan,Kairouan,Kairouan,2009-06-26
+BR17,Agence Kasserine,Kasserine,Kasserine,2009-08-28
+BR18,Agence Sidi Bouzid,Sidi Bouzid,Sidi Bouzid,2012-02-21
+BR19,Agence Gabes,Gabes,Gabes,2015-11-14
+BR20,Agence Medenine,Medenine,Medenine,2012-09-01
+BR21,Agence Tataouine,Tataouine,Tataouine,2007-07-04
+BR22,Agence Gafsa,Gafsa,Gafsa,2021-03-29
+BR23,Agence Tozeur,Tozeur,Tozeur,2011-08-13
+BR24,Agence Kebili,Kebili,Kebili,2020-02-29

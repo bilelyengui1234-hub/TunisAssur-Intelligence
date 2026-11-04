@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Power BI temp / lock files
+~$*.pbix
+*.tmp
+
+# Editors
+.vscode/
+.idea/
+
+# Keep the project's data, SQL, docs and .pbix tracked (they are the deliverable).

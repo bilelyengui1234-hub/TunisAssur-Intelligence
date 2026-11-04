@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 640" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="1040" height="640" fill="#F8F9FA"/>
+
+  <!-- left nav -->
+  <rect x="0" y="0" width="180" height="640" fill="#0B2545"/>
+  <text x="20" y="40" fill="#fff" font-size="18" font-weight="700">TunisAssur</text>
+  <text x="20" y="58" fill="#9EC5E6" font-size="10">Intelligence</text>
+  <g font-size="13" fill="#DCE7F2">
+    <rect x="12" y="90" width="156" height="34" rx="6" fill="#2A9D8F"/>
+    <text x="28" y="112" fill="#fff" font-weight="700">Executive</text>
+    <text x="28" y="156">Claims</text>
+    <text x="28" y="196">Customers</text>
+    <text x="28" y="236">Risk &amp; Fraud</text>
+  </g>
+  <text x="20" y="612" fill="#6C8" font-size="9" fill-opacity="0.7">Synthetic data · fictional company</text>
+
+  <!-- header -->
+  <text x="200" y="40" font-size="20" font-weight="700" fill="#0B2545">Executive Overview — 2025</text>
+  <g font-size="10" fill="#495057">
+    <rect x="760" y="24" width="80" height="22" rx="11" fill="#fff" stroke="#CED4DA"/><text x="772" y="39">Year ▾</text>
+    <rect x="848" y="24" width="84" height="22" rx="11" fill="#fff" stroke="#CED4DA"/><text x="860" y="39">Product ▾</text>
+    <rect x="940" y="24" width="84" height="22" rx="11" fill="#fff" stroke="#CED4DA"/><text x="952" y="39">Region ▾</text>
+  </g>
+
+  <!-- KPI cards -->
+  <g>
+    <!-- card template: x positions -->
+    <!-- 1 -->
+    <rect x="200" y="62" width="126" height="80" rx="8" fill="#fff" stroke="#E9ECEF"/>
+    <text x="212" y="84" font-size="10" fill="#6C757D">Total Premiums</text>
+    <text x="212" y="116" font-size="24" font-weight="700" fill="#0B2545">13.2M</text>
+    <text x="212" y="132" font-size="9" fill="#2A9D8F">TND ▲ YoY</text>
+    <!-- 2 -->
+    <rect x="338" y="62" width="126" height="80" rx="8" fill="#fff" stroke="#E9ECEF"/>
+    <text x="350" y="84" font-size="10" fill="#6C757D">Incurred Claims</text>
+    <text x="350" y="116" font-size="24" font-weight="700" fill="#0B2545">9.5M</text>
+    <text x="350" y="132" font-size="9" fill="#E76F51">TND</text>
+    <!-- 3 -->
+    <rect x="476" y="62" width="126" height="80" rx="8" fill="#fff" stroke="#E9ECEF"/>
+    <text x="488" y="84" font-size="10" fill="#6C757D">Claims Paid</text>
+    <text x="488" y="116" font-size="24" font-weight="700" fill="#0B2545">6.1M</text>
+    <text x="488" y="132" font-size="9" fill="#6C757D">TND</text>
+    <!-- 4 -->
+    <rect x="614" y="62" width="126" height="80" rx="8" fill="#fff" stroke="#E9ECEF"/>
+    <text x="626" y="84" font-size="10" fill="#6C757D">Active Policies</text>
+    <text x="626" y="116" font-size="24" font-weight="700" fill="#0B2545">3,444</text>
+    <!-- 5 Loss Ratio -->
+    <rect x="752" y="62" width="126" height="80" rx="8" fill="#fff" stroke="#E76F51" stroke-width="2"/>
+    <text x="764" y="84" font-size="10" fill="#6C757D">Loss Ratio</text>
+    <text x="764" y="116" font-size="24" font-weight="700" fill="#E76F51">85.1%</text>
+    <text x="764" y="132" font-size="9" fill="#E76F51">margin pressure</text>
+    <!-- 6 -->
+    <rect x="890" y="62" width="130" height="80" rx="8" fill="#fff" stroke="#E9ECEF"/>
+    <text x="902" y="84" font-size="10" fill="#6C757D">Retention</text>
+    <text x="902" y="116" font-size="24" font-weight="700" fill="#2A9D8F">56%</text>
+  </g>
+
+  <!-- trend line chart -->
+  <rect x="200" y="162" width="500" height="210" rx="8" fill="#fff" stroke="#E9ECEF"/>
+  <text x="214" y="184" font-size="12" font-weight="700" fill="#0B2545">Premiums vs Claims — monthly</text>
+  <g stroke="#EDF0F2"><line x1="214" y1="210" x2="686" y2="210"/><line x1="214" y1="252" x2="686" y2="252"/><line x1="214" y1="294" x2="686" y2="294"/><line x1="214" y1="336" x2="686" y2="336"/></g>
+  <polyline fill="none" stroke="#2A9D8F" stroke-width="2.5" points="214,330 260,320 306,312 352,300 398,286 444,276 490,262 536,250 582,232 628,210 672,196"/>
+  <polyline fill="none" stroke="#E76F51" stroke-width="2.5" points="214,344 260,342 306,338 352,336 398,330 444,328 490,322 536,318 582,312 628,306 672,300"/>
+  <g font-size="9" fill="#6C757D"><rect x="214" y="350" width="10" height="4" fill="#2A9D8F"/><text x="228" y="358">Premiums</text><rect x="300" y="350" width="10" height="4" fill="#E76F51"/><text x="314" y="358">Incurred Claims</text></g>
+
+  <!-- product bar -->
+  <rect x="715" y="162" width="305" height="210" rx="8" fill="#fff" stroke="#E9ECEF"/>
+  <text x="729" y="184" font-size="12" font-weight="700" fill="#0B2545">Premiums by Product</text>
+  <g fill="#2A9D8F">
+    <rect x="729" y="200" width="250" height="18"/><rect x="729" y="228" width="150" height="18"/>
+    <rect x="729" y="256" width="120" height="18"/><rect x="729" y="284" width="95" height="18"/>
+    <rect x="729" y="312" width="70" height="18"/>
+  </g>
+  <g font-size="9" fill="#fff"><text x="735" y="213">Professionnelle</text><text x="735" y="241">Automobile</text><text x="735" y="269">Santé</text><text x="735" y="297">Habitation</text><text x="735" y="325">Vie</text></g>
+
+  <!-- branch bar -->
+  <rect x="200" y="388" width="360" height="222" rx="8" fill="#fff" stroke="#E9ECEF"/>
+  <text x="214" y="410" font-size="12" font-weight="700" fill="#0B2545">Performance by Branch (governorate)</text>
+  <g fill="#0B2545">
+    <rect x="214" y="426" width="300" height="16"/><rect x="214" y="450" width="268" height="16"/>
+    <rect x="214" y="474" width="250" height="16"/><rect x="214" y="498" width="232" height="16"/>
+    <rect x="214" y="522" width="200" height="16"/><rect x="214" y="546" width="170" height="16"/>
+    <rect x="214" y="570" width="150" height="16"/>
+  </g>
+  <g font-size="9" fill="#fff"><text x="220" y="438">Tunis</text><text x="220" y="462">Sfax</text><text x="220" y="486">Sousse</text><text x="220" y="510">Nabeul</text><text x="220" y="534">Ben Arous</text><text x="220" y="558">Bizerte</text><text x="220" y="582">Ariana</text></g>
+
+  <!-- YoY column -->
+  <rect x="575" y="388" width="445" height="222" rx="8" fill="#fff" stroke="#E9ECEF"/>
+  <text x="589" y="410" font-size="12" font-weight="700" fill="#0B2545">Year-over-Year — Premiums vs Claims</text>
+  <g>
+    <rect x="620" y="500" width="48" height="90" fill="#2A9D8F"/><rect x="674" y="520" width="48" height="70" fill="#E76F51"/>
+    <text x="640" y="604" font-size="10" fill="#495057">2024</text>
+    <rect x="800" y="452" width="48" height="138" fill="#2A9D8F"/><rect x="854" y="486" width="48" height="104" fill="#E76F51"/>
+    <text x="820" y="604" font-size="10" fill="#495057">2025</text>
+  </g>
+  <g font-size="9" fill="#6C757D"><rect x="589" y="430" width="10" height="4" fill="#2A9D8F"/><text x="603" y="438">Premiums</text><rect x="675" y="430" width="10" height="4" fill="#E76F51"/><text x="689" y="438">Claims</text></g>
+</svg>

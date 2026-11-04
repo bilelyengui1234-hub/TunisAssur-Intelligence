@@ -1,0 +1,6 @@
+ProductID,ProductName,ProductCategory,CoverageDescription,policy_share,premium_min,premium_max,claim_frequency,severity_min,severity_max
+PRD001,Assurance Automobile,Automobile,"Responsabilite civile, dommages, vol et incendie vehicule",0.4,300,1200,0.35,208,7800
+PRD002,Assurance Sante,Sante,"Frais medicaux, hospitalisation et soins",0.22,400,2000,0.55,52,4160
+PRD003,Assurance Vie,Vie,"Capital deces, epargne et prevoyance",0.12,200,3000,0.04,2600,52000
+PRD004,Assurance Habitation,Habitation,"Incendie, degats des eaux, vol et responsabilite habitation",0.16,150,800,0.18,260,15600
+PRD005,Assurance Professionnelle,Professionnelle,Responsabilite civile professionnelle et multirisque entreprise,0.1,500,5000,0.22,520,26000
