@@ -1,0 +1,370 @@
+<title>TunisAssur Intelligence</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Insurance performance, customer and claims-risk analytics dashboard (synthetic data).">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  /* Layout: sticky header with tabs → each page is a KPI row + a responsive grid of chart cards */
+  :root{
+    --bg:#EEF1F5; --surface:#FFFFFF; --surface-2:#F7F9FB; --border:#E1E6EC;
+    --ink:#0B2545; --ink-2:#51627A; --muted:#8696AB;
+    --accent:#0E9488; --accent-2:#F26419; --navy:#0B2545;
+    --good:#0E9488; --warn:#F26419; --crit:#D11149;
+    --grid:#E9EDF2;
+    --c1:#0E9488; --c2:#F26419; --c3:#2E6FDB; --c4:#C42E8A; --c5:#B07A00; --c6:#5B4FC7;
+    --shadow:0 1px 2px rgba(11,37,69,.06),0 4px 16px rgba(11,37,69,.05);
+    --font-display:"Archivo",system-ui,sans-serif;
+    --font-body:"IBM Plex Sans",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0A0E14; --surface:#131A23; --surface-2:#19212C; --border:#273340;
+    --ink:#E9EEF4; --ink-2:#A4B4C6; --muted:#6D7F94;
+    --accent:#19B3A6; --accent-2:#FF8A4D; --navy:#0B2545;
+    --good:#19B3A6; --warn:#FF8A4D; --crit:#FF5277;
+    --grid:#212B37;
+    --c1:#15A093; --c2:#F2702E; --c3:#4E82DE; --c4:#DD5AA6; --c5:#C6960F; --c6:#7B68D6;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0A0E14; --surface:#131A23; --surface-2:#19212C; --border:#273340;
+    --ink:#E9EEF4; --ink-2:#A4B4C6; --muted:#6D7F94;
+    --accent:#19B3A6; --accent-2:#FF8A4D; --navy:#0B2545;
+    --good:#19B3A6; --warn:#FF8A4D; --crit:#FF5277;
+    --grid:#212B37;
+    --c1:#15A093; --c2:#F2702E; --c3:#4E82DE; --c4:#DD5AA6; --c5:#C6960F; --c6:#7B68D6;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.45;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+  /* header */
+  .top{position:sticky;top:env(safe-area-inset-top,0);z-index:20;background:var(--navy);color:#fff}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0);background:var(--navy);z-index:21}
+  .top-in{max-width:1200px;margin:0 auto;padding-block:14px;
+    padding-left:max(18px,env(safe-area-inset-left,0));padding-right:max(18px,env(safe-area-inset-right,0));
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+  .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#0b6);display:grid;place-items:center;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+  .mark svg{width:19px;height:19px}
+  .brand b{font-family:var(--font-display);font-weight:800;font-size:1.06rem;letter-spacing:.2px;display:block;line-height:1.1}
+  .brand span{font-size:.72rem;color:#9ec5e6;letter-spacing:.3px}
+  .chip{font-size:.66rem;letter-spacing:.5px;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.1);color:#cfe0f0;border:1px solid rgba(255,255,255,.14);white-space:nowrap}
+  .tbtn{appearance:none;border:0;background:none;color:#fff;font:inherit;cursor:pointer;padding:7px 2px;opacity:.6}
+  #themeToggle{opacity:.85;font-size:1.05rem;padding:6px 9px;border-radius:8px}
+  #themeToggle:hover{background:rgba(255,255,255,.1)}
+
+  /* tabs */
+  .tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.08)}
+  .tabs-in{max-width:1200px;margin:0 auto;padding-left:max(10px,env(safe-area-inset-left,0));padding-right:max(10px,env(safe-area-inset-right,0));display:flex;gap:2px;overflow-x:auto}
+  .tab{appearance:none;border:0;background:none;color:#9ec5e6;font-family:var(--font-display);font-weight:600;font-size:.86rem;cursor:pointer;padding:12px 16px;border-bottom:3px solid transparent;white-space:nowrap}
+  .tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--accent)}
+  .tab:hover{color:#fff}
+
+  /* page wrap */
+  main{max-width:1200px;margin:0 auto;padding-block:22px 48px;
+    padding-left:max(18px,env(safe-area-inset-left,0));padding-right:max(18px,env(safe-area-inset-right,0))}
+  .page-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .page-head h2{font-size:1.32rem;letter-spacing:-.2px}
+  .page-head p{margin:0;color:var(--ink-2);font-size:.86rem}
+
+  /* kpi row */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px 15px;box-shadow:var(--shadow);min-width:0}
+  .kpi .lab{font-size:.72rem;color:var(--ink-2);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+  .kpi .val{font-family:var(--font-display);font-weight:800;font-size:1.7rem;letter-spacing:-.5px;margin-top:6px;line-height:1;font-variant-numeric:tabular-nums}
+  .kpi .sub{font-size:.74rem;color:var(--muted);margin-top:5px}
+  .kpi .sub.pos{color:var(--good)} .kpi .sub.neg{color:var(--warn)}
+  .kpi.alert{border-color:color-mix(in srgb,var(--warn) 55%,var(--border))}
+  .kpi.alert .val{color:var(--warn)}
+
+  /* chart grid */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px 16px 16px;box-shadow:var(--shadow);min-width:0;display:flex;flex-direction:column}
+  .card h3{font-size:.95rem;font-weight:700;letter-spacing:-.1px}
+  .card .hint{font-size:.74rem;color:var(--muted);margin:2px 0 11px}
+  .col-12{grid-column:span 12} .col-8{grid-column:span 8} .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-5{grid-column:span 5} .col-7{grid-column:span 7}
+  .plot{position:relative;flex:1;min-height:220px}
+  .plot.tall{min-height:300px}
+  @media (max-width:860px){.col-8,.col-6,.col-4,.col-5,.col-7{grid-column:span 12}}
+
+  .note{background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:10px;padding:12px 14px;font-size:.82rem;color:var(--ink-2)}
+  .note b{color:var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:10px;font-size:.78rem;color:var(--ink-2)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;flex:none}
+  footer{max-width:1200px;margin:0 auto;padding:8px max(18px,env(safe-area-inset-left,0)) 40px;color:var(--muted);font-size:.76rem}
+  footer a{color:var(--accent)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 8.4 8 11 4.6-2.6 8-6 8-11V5l-8-3Z" fill="#fff" opacity=".95"/><path d="m8.5 12 2.4 2.4L15.8 9" stroke="#0E9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><b>TunisAssur Intelligence</b><span>Insurance performance · customer · claims-risk analytics</span></div>
+    </div>
+    <span class="chip">Synthetic data · 2022–2025 · TND</span>
+    <button id="themeToggle" class="tbtn" title="Toggle light / dark" aria-label="Toggle theme">◐</button>
+  </div>
+  <nav class="tabs"><div class="tabs-in" role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  data-page="exec">Executive</button>
+    <button class="tab" role="tab" aria-selected="false" data-page="claims">Claims</button>
+    <button class="tab" role="tab" aria-selected="false" data-page="customer">Customers</button>
+    <button class="tab" role="tab" aria-selected="false" data-page="risk">Risk &amp; Fraud</button>
+  </div></nav>
+</header>
+
+<main>
+  <!-- ============ EXECUTIVE ============ -->
+  <section id="page-exec">
+    <div class="page-head"><h2>Executive Overview</h2><p>Company performance at a glance — fictional insurer, 2022–2025.</p></div>
+    <div class="kpis" id="kpis-exec"></div>
+    <div class="grid">
+      <div class="card col-8"><h3>Premiums vs Incurred Claims</h3><p class="hint">Monthly, written premium against claims incurred (TND)</p><div class="plot tall"><canvas id="c_trend"></canvas></div></div>
+      <div class="card col-4"><h3>Premiums by Product</h3><p class="hint">Written premium (TND)</p><div class="plot tall"><canvas id="c_premprod"></canvas></div></div>
+      <div class="card col-7"><h3>Compensation Paid by Branch</h3><p class="hint">Top agencies by claims payout (TND)</p><div class="plot"><canvas id="c_branch"></canvas></div></div>
+      <div class="card col-5"><h3>Year-over-Year</h3><p class="hint">Written premium vs incurred claims (TND)</p><div class="plot"><canvas id="c_yoy"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ============ CLAIMS ============ -->
+  <section id="page-claims" hidden>
+    <div class="page-head"><h2>Claims Analysis</h2><p>4,000 claims — status, cost and geography.</p></div>
+    <div class="kpis" id="kpis-claims"></div>
+    <div class="grid">
+      <div class="card col-4"><h3>Claim Status</h3><p class="hint">Share of all claims</p><div class="plot"><canvas id="c_status"></canvas></div></div>
+      <div class="card col-4"><h3>Claims by Product</h3><p class="hint">Number of claims</p><div class="plot"><canvas id="c_claimprod"></canvas></div></div>
+      <div class="card col-4"><h3>Average Claim by Product</h3><p class="hint">Mean claim amount (TND)</p><div class="plot"><canvas id="c_avgclaim"></canvas></div></div>
+      <div class="card col-7"><h3>Incurred Claims by Month</h3><p class="hint">Claim cost over time (TND)</p><div class="plot"><canvas id="c_claimtrend"></canvas></div></div>
+      <div class="card col-5"><h3>Claims by Governorate</h3><p class="hint">Top regions by claim count</p><div class="plot"><canvas id="c_claimgov"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER ============ -->
+  <section id="page-customer" hidden>
+    <div class="page-head"><h2>Customer Intelligence</h2><p>5,000 customers — segments, geography and holdings.</p></div>
+    <div class="kpis" id="kpis-customer"></div>
+    <div class="grid">
+      <div class="card col-5"><h3>Customers by Segment</h3><p class="hint">Value tier</p><div class="plot"><canvas id="c_segment"></canvas></div></div>
+      <div class="card col-7"><h3>Customers by Governorate</h3><p class="hint">Top regions</p><div class="plot"><canvas id="c_custgov"></canvas></div></div>
+      <div class="card col-4"><h3>Customer Type</h3><p class="hint">Individual vs business</p><div class="plot"><canvas id="c_type"></canvas></div></div>
+      <div class="card col-4"><h3>Gender</h3><p class="hint">Customer base</p><div class="plot"><canvas id="c_gender"></canvas></div></div>
+      <div class="card col-4"><h3>Policies by Product</h3><p class="hint">Active book of 8,000 policies</p><div class="plot"><canvas id="c_polprod"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ============ RISK ============ -->
+  <section id="page-risk" hidden>
+    <div class="page-head"><h2>Risk &amp; Fraud Indicators</h2><p>Rule-based preliminary screening.</p></div>
+    <div class="note" style="margin-bottom:16px"><b>Preliminary screening for human review — not a fraud determination.</b> A high score flags a claim for investigation; it never labels a customer fraudulent. See limitations below.</div>
+    <div class="kpis" id="kpis-risk"></div>
+    <div class="grid">
+      <div class="card col-5"><h3>Claims by Risk Category</h3><p class="hint">Low / Medium / High</p><div class="plot"><canvas id="c_riskcat"></canvas></div></div>
+      <div class="card col-7"><h3>Risk Score Distribution</h3><p class="hint">All 4,000 claims, score 0–100</p><div class="plot"><canvas id="c_riskhist"></canvas></div></div>
+      <div class="card col-12">
+        <h3>How the score works</h3><p class="hint">Transparent points — a claim can trigger several rules (max 100)</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+          <div class="note" style="border-left-color:var(--c1)"><b>R1 · High frequency</b><br>&gt; 3 claims in 12 months → <b class="mono">30 pts</b></div>
+          <div class="note" style="border-left-color:var(--c2)"><b>R2 · Unusual amount</b><br>&gt; 3× category average → <b class="mono">30 pts</b></div>
+          <div class="note" style="border-left-color:var(--c3)"><b>R3 · Rapid succession</b><br>another claim within 30 days → <b class="mono">20 pts</b></div>
+          <div class="note" style="border-left-color:var(--c4)"><b>R4 · Repeated vehicle</b><br>same vehicle on &gt;1 claim → <b class="mono">20 pts</b></div>
+        </div>
+        <div class="note" style="margin-top:12px;border-left-color:var(--muted)"><b>Limitations:</b> false positives are expected (a bad year ≠ fraud); thresholds are policy choices to be tuned on real outcomes; small samples carry weak signal; and because this data is synthetic, the screening partly rediscovers its own generator. Always confirm with a human review.</div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>TunisAssur is a fictional company; all figures are synthetic. Market comparisons, where shown elsewhere, cite FTUSA/Atlas/UNDP. Built as a BI portfolio project.</footer>
+
+<script>
+const D = {
+  kpi:{written:13189230,net:12714320,collected:9754505,incurredAll:11226450,incurred:9540610,paid:6126660,outstanding:3413950,
+    lossWritten:0.851,lossEarned:1.003,customers:5000,activeCust:2742,retention:0.548,policies:8000,activePol:3444,polPerCust:1.60,
+    claims:4000,approved:2211,rejected:575,pending:1214,avgClaim:2807,avgPremium:1649,avgProc:70,
+    high:32,medium:475,low:3493,flagged:507,flaggedPct:0.1268,avgRisk:10.4,repeatedVeh:1147},
+  months:["2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12"],
+  premM:[78375,91070,97680,84835,76895,119155,140900,114635,128050,140140,95210,108760,175190,141535,183180,187055,192340,196750,234985,193015,216455,192920,221985,268590,214705,255895,226955,303325,229945,287960,324110,298145,299395,365840,332870,439760,284780,248535,312560,328830,319745,378440,401340,477640,530460,592975,684150,1371165],
+  claimM:[4570,12780,35780,49660,24600,45470,63630,118080,81990,138940,191330,107700,134710,137050,116240,94010,175930,170770,168210,171650,265360,226600,258800,200050,333320,290520,238690,306760,297780,295050,283310,225410,283260,251420,299820,324390,331060,241640,369400,384310,403720,367530,399320,382330,505380,395790,433380,588950],
+  years:["2022","2023","2024","2025"], premY:[1275705,2404000,3578905,5930620], claimY:[874530,2119380,3429730,4802810],
+  premProd:{l:["Professionnelle","Automobile","Santé","Vie","Habitation"],v:[5249525,2935175,2359680,1984040,660810]},
+  claimProd:{l:["Automobile","Santé","Professionnelle","Habitation","Vie"],v:[1689,1365,538,347,61]},
+  avgClaimProd:{l:["Vie","Professionnelle","Habitation","Automobile","Santé"],v:[12065,7393,4115,2150,1066]},
+  polProd:{l:["Automobile","Santé","Professionnelle","Habitation","Vie"],v:[2898,1597,1474,1147,884]},
+  branch:{l:["Tunis","Nabeul","Sfax","Sousse","Monastir","Ben Arous","Bizerte","Medenine","Ariana","Kairouan","Sidi Bouzid","Jendouba"],v:[592530,519180,503110,483000,407780,389500,378230,353470,310740,292660,236020,216420]},
+  claimGov:{l:["Tunis","Sfax","Sousse","Nabeul","Ben Arous","Bizerte","Ariana","Monastir","Kairouan","Jendouba","Manouba","Sidi Bouzid"],v:[325,324,323,274,274,255,248,247,185,151,139,136]},
+  custGov:{l:["Tunis","Sfax","Sousse","Nabeul","Ben Arous","Monastir","Bizerte","Ariana","Kairouan","Kasserine","Medenine","Manouba"],v:[468,382,377,366,302,288,286,274,220,199,196,176]},
+  segment:{l:["Standard","Silver","PME","Gold","Grand Compte","Platinum"],v:[2543,1077,601,455,188,136]},
+  status:{l:["Approved","Pending","Rejected"],v:[2211,1214,575]},
+  type:{l:["Particulier","Entreprise"],v:[4211,789]},
+  gender:{l:["Femme","Homme"],v:[2532,2468]},
+  riskcat:{l:["Low","Medium","High"],v:[3493,475,32]},
+  riskhist:{l:["0–9","10–19","20–29","30–39","40–49","50–59","60–69","70–79","80–89","90–100"],v:[2435,0,1058,228,106,141,5,23,3,1]}
+};
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const money = v => v>=1e6 ? (v/1e6).toFixed(2)+"M" : v>=1e3 ? Math.round(v/1e3)+"K" : ""+Math.round(v);
+const num = v => v.toLocaleString("en-US");
+const pct = v => (v*100).toFixed(1)+"%";
+
+function kpiCards(id, items){
+  document.getElementById(id).innerHTML = items.map(k=>`
+    <div class="kpi${k.alert?' alert':''}">
+      <div class="lab">${k.lab}</div>
+      <div class="val">${k.val}</div>
+      ${k.sub?`<div class="sub ${k.subCls||''}">${k.sub}</div>`:''}
+    </div>`).join("");
+}
+function renderKpis(){
+  const k=D.kpi;
+  kpiCards("kpis-exec",[
+    {lab:"Total Premiums",val:money(k.written)+" TND",sub:"written · 12.71M net"},
+    {lab:"Incurred Claims",val:money(k.incurred)+" TND",sub:"approved + pending"},
+    {lab:"Claims Paid",val:money(k.paid)+" TND",sub:money(k.outstanding)+" outstanding"},
+    {lab:"Active Policies",val:num(k.activePol),sub:"of 8,000 total"},
+    {lab:"Loss Ratio",val:pct(k.lossWritten),alert:true,sub:"written basis · 100.3% earned",subCls:"neg"},
+    {lab:"Retention",val:pct(k.retention),sub:num(k.activeCust)+" active customers"}
+  ]);
+  kpiCards("kpis-claims",[
+    {lab:"Total Claims",val:num(k.claims)},
+    {lab:"Approved",val:num(k.approved),sub:pct(k.approved/k.claims)+" approval rate",subCls:"pos"},
+    {lab:"Rejected",val:num(k.rejected)},
+    {lab:"Pending",val:num(k.pending),sub:"awaiting decision"},
+    {lab:"Avg Claim",val:num(k.avgClaim)+" TND"},
+    {lab:"Avg Processing",val:k.avgProc+" days"}
+  ]);
+  kpiCards("kpis-customer",[
+    {lab:"Total Customers",val:num(k.customers)},
+    {lab:"Active Customers",val:num(k.activeCust),sub:pct(k.retention)+" retention",subCls:"pos"},
+    {lab:"Policies / Customer",val:k.polPerCust.toFixed(2)},
+    {lab:"Avg Premium / Cust.",val:money(Math.round(k.written/k.customers))+" TND"},
+    {lab:"Business Clients",val:num(789),sub:"15.8% of base"}
+  ]);
+  kpiCards("kpis-risk",[
+    {lab:"High-Risk Claims",val:num(k.high),alert:true,subCls:"neg",sub:"0.8% of claims"},
+    {lab:"Medium-Risk",val:num(k.medium)},
+    {lab:"Low-Risk",val:num(k.low)},
+    {lab:"Flagged for Review",val:num(k.flagged),sub:pct(k.flaggedPct)+" of claims"},
+    {lab:"Avg Risk Score",val:k.avgRisk.toFixed(1),sub:"out of 100"}
+  ]);
+}
+
+let CHARTS=[];
+function P(){return[css("--c1"),css("--c2"),css("--c3"),css("--c4"),css("--c5"),css("--c6")];}
+function baseOpts(){
+  const ink=css("--ink"),ink2=css("--ink-2"),grid=css("--grid"),surf=css("--surface");
+  Chart.defaults.font.family=getComputedStyle(document.body).fontFamily;
+  Chart.defaults.color=ink2;
+  return {ink,ink2,grid,surf};
+}
+function tip(t){return{backgroundColor:t.surf,titleColor:t.ink,bodyColor:t.ink2,borderColor:css("--border"),borderWidth:1,padding:10,cornerRadius:8,boxPadding:4,titleFont:{weight:"600"}};}
+
+function mk(id,cfg){const el=document.getElementById(id);if(!el)return;CHARTS.push(new Chart(el,cfg));}
+
+function buildCharts(){
+  CHARTS.forEach(c=>c.destroy());CHARTS=[];
+  const t=baseOpts(),pal=P();
+  const axM={grid:{color:t.grid,drawBorder:false},ticks:{color:t.ink2}};
+  const axMoney={...axM,ticks:{color:t.ink2,callback:v=>money(v)}};
+  const gap={borderRadius:4,borderSkipped:false,maxBarThickness:46};
+
+  // Executive trend
+  mk("c_trend",{type:"line",data:{labels:D.months,datasets:[
+    {label:"Premiums",data:D.premM,borderColor:pal[0],backgroundColor:"transparent",borderWidth:2.5,tension:.35,pointRadius:0,pointHoverRadius:5},
+    {label:"Incurred Claims",data:D.claimM,borderColor:pal[1],backgroundColor:"transparent",borderWidth:2.5,tension:.35,pointRadius:0,pointHoverRadius:5}]},
+    options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+      plugins:{legend:{position:"top",labels:{color:t.ink2,usePointStyle:true,boxWidth:8}},tooltip:{...tip(t),callbacks:{label:c=>` ${c.dataset.label}: ${num(Math.round(c.parsed.y))} TND`}}},
+      scales:{x:{...axM,ticks:{color:t.ink2,maxTicksLimit:9,autoSkip:true}},y:axMoney}}});
+
+  // Premiums by product
+  mk("c_premprod",{type:"bar",data:{labels:D.premProd.l,datasets:[{data:D.premProd.v,backgroundColor:pal,...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} TND`}}},scales:{x:axMoney,y:{...axM,grid:{display:false}}}}});
+
+  // Branch compensation
+  mk("c_branch",{type:"bar",data:{labels:D.branch.l,datasets:[{data:D.branch.v,backgroundColor:pal[0],...gap}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.y)} TND`}}},scales:{x:{...axM,grid:{display:false},ticks:{color:t.ink2,maxRotation:60,minRotation:45}},y:axMoney}}});
+
+  // YoY grouped
+  mk("c_yoy",{type:"bar",data:{labels:D.years,datasets:[
+    {label:"Premiums",data:D.premY,backgroundColor:pal[0],...gap},
+    {label:"Incurred Claims",data:D.claimY,backgroundColor:pal[1],...gap}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{position:"top",labels:{color:t.ink2,usePointStyle:true,boxWidth:8}},tooltip:{...tip(t),callbacks:{label:c=>` ${c.dataset.label}: ${num(c.parsed.y)} TND`}}},scales:{x:{...axM,grid:{display:false}},y:axMoney}}});
+
+  // Claims status doughnut
+  mk("c_status",{type:"doughnut",data:{labels:D.status.l,datasets:[{data:D.status.v,backgroundColor:[pal[0],pal[4],pal[1]],borderColor:t.surf,borderWidth:2}]},
+    options:{maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"bottom",labels:{color:t.ink2,usePointStyle:true,boxWidth:8,padding:12}},tooltip:{...tip(t),callbacks:{label:c=>` ${c.label}: ${num(c.parsed)} (${pct(c.parsed/4000)})`}}}}});
+
+  // Claims by product (count)
+  mk("c_claimprod",{type:"bar",data:{labels:D.claimProd.l,datasets:[{data:D.claimProd.v,backgroundColor:pal,...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} claims`}}},scales:{x:axM,y:{...axM,grid:{display:false}}}}});
+
+  // Avg claim by product
+  mk("c_avgclaim",{type:"bar",data:{labels:D.avgClaimProd.l,datasets:[{data:D.avgClaimProd.v,backgroundColor:pal,...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} TND avg`}}},scales:{x:axMoney,y:{...axM,grid:{display:false}}}}});
+
+  // Claims trend
+  mk("c_claimtrend",{type:"line",data:{labels:D.months,datasets:[{label:"Incurred",data:D.claimM,borderColor:pal[1],backgroundColor:"transparent",borderWidth:2.5,tension:.35,pointRadius:0,pointHoverRadius:5,fill:false}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(Math.round(c.parsed.y))} TND`}}},scales:{x:{...axM,ticks:{color:t.ink2,maxTicksLimit:9}},y:axMoney}}});
+
+  // Claims by governorate
+  mk("c_claimgov",{type:"bar",data:{labels:D.claimGov.l,datasets:[{data:D.claimGov.v,backgroundColor:pal[2],...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} claims`}}},scales:{x:axM,y:{...axM,grid:{display:false}}}}});
+
+  // Segments
+  mk("c_segment",{type:"bar",data:{labels:D.segment.l,datasets:[{data:D.segment.v,backgroundColor:pal,...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} customers`}}},scales:{x:axM,y:{...axM,grid:{display:false}}}}});
+
+  // Customers by governorate
+  mk("c_custgov",{type:"bar",data:{labels:D.custGov.l,datasets:[{data:D.custGov.v,backgroundColor:pal[0],...gap}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.y)} customers`}}},scales:{x:{...axM,grid:{display:false},ticks:{color:t.ink2,maxRotation:60,minRotation:45}},y:axM}}});
+
+  // Type doughnut
+  mk("c_type",{type:"doughnut",data:{labels:D.type.l,datasets:[{data:D.type.v,backgroundColor:[pal[0],pal[2]],borderColor:t.surf,borderWidth:2}]},
+    options:{maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"bottom",labels:{color:t.ink2,usePointStyle:true,boxWidth:8,padding:12}},tooltip:{...tip(t),callbacks:{label:c=>` ${c.label}: ${num(c.parsed)} (${pct(c.parsed/5000)})`}}}}});
+
+  // Gender doughnut
+  mk("c_gender",{type:"doughnut",data:{labels:D.gender.l,datasets:[{data:D.gender.v,backgroundColor:[pal[3],pal[2]],borderColor:t.surf,borderWidth:2}]},
+    options:{maintainAspectRatio:false,cutout:"62%",plugins:{legend:{position:"bottom",labels:{color:t.ink2,usePointStyle:true,boxWidth:8,padding:12}},tooltip:{...tip(t),callbacks:{label:c=>` ${c.label}: ${num(c.parsed)} (${pct(c.parsed/5000)})`}}}}});
+
+  // Policies by product
+  mk("c_polprod",{type:"bar",data:{labels:D.polProd.l,datasets:[{data:D.polProd.v,backgroundColor:pal,...gap}]},
+    options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.x)} policies`}}},scales:{x:axM,y:{...axM,grid:{display:false}}}}});
+
+  // Risk category
+  mk("c_riskcat",{type:"bar",data:{labels:D.riskcat.l,datasets:[{data:D.riskcat.v,backgroundColor:[css("--good"),css("--warn"),css("--crit")],...gap}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{label:c=>` ${num(c.parsed.y)} claims (${pct(c.parsed.y/4000)})`}}},scales:{x:{...axM,grid:{display:false}},y:axM}}});
+
+  // Risk histogram
+  mk("c_riskhist",{type:"bar",data:{labels:D.riskhist.l,datasets:[{data:D.riskhist.v,backgroundColor:D.riskhist.l.map((_,i)=>i<2?css("--good"):i<5?css("--warn"):css("--crit")),borderRadius:3,borderSkipped:false}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip(t),callbacks:{title:c=>"Score "+c[0].label,label:c=>` ${num(c.parsed.y)} claims`}}},scales:{x:{...axM,grid:{display:false}},y:axM}}});
+}
+
+// tabs
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b===btn));
+  ["exec","claims","customer","risk"].forEach(p=>document.getElementById("page-"+p).hidden = p!==btn.dataset.page);
+  try{localStorage.setItem("ta_tab",btn.dataset.page)}catch(e){}
+}));
+try{const saved=localStorage.getItem("ta_tab");if(saved){const b=document.querySelector(`.tab[data-page="${saved}"]`);if(b)b.click();}}catch(e){}
+
+// theme toggle
+const root=document.documentElement;
+function applyToggle(){
+  try{const s=localStorage.getItem("ta_theme");if(s)root.setAttribute("data-theme",s);}catch(e){}
+}
+document.getElementById("themeToggle").addEventListener("click",()=>{
+  const cur=root.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+  const next=cur==="dark"?"light":"dark";
+  root.setAttribute("data-theme",next);
+  try{localStorage.setItem("ta_theme",next)}catch(e){}
+  buildCharts();
+});
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{if(!root.getAttribute("data-theme"))buildCharts();});
+
+applyToggle();
+renderKpis();
+buildCharts();
+</script>

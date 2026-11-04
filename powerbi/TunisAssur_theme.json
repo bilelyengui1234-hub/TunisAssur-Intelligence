@@ -1,0 +1,39 @@
+{
+  "name": "TunisAssur Intelligence",
+  "dataColors": [
+    "#2A9D8F",
+    "#E76F51",
+    "#0B2545",
+    "#264653",
+    "#457B9D",
+    "#E9C46A",
+    "#8AB17D",
+    "#B07BAC"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#0B2545",
+  "tableAccent": "#2A9D8F",
+  "good": "#2A9D8F",
+  "neutral": "#E9C46A",
+  "bad": "#D00000",
+  "maximum": "#E76F51",
+  "center": "#E9C46A",
+  "minimum": "#2A9D8F",
+  "null": "#CED4DA",
+  "textClasses": {
+    "title":   { "fontFace": "Segoe UI Semibold", "color": "#0B2545", "fontSize": 14 },
+    "header":  { "fontFace": "Segoe UI Semibold", "color": "#0B2545", "fontSize": 12 },
+    "label":   { "fontFace": "Segoe UI",          "color": "#264653", "fontSize": 10 },
+    "callout": { "fontFace": "Segoe UI Semibold", "color": "#0B2545", "fontSize": 28 }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [ { "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 } ],
+        "border":     [ { "show": true, "color": { "solid": { "color": "#E9ECEF" } }, "radius": 8 } ],
+        "visualHeader": [ { "show": false } ],
+        "title": [ { "show": true, "fontColor": { "solid": { "color": "#0B2545" } }, "fontSize": 13, "fontFamily": "Segoe UI Semibold" } ]
+      }
+    }
+  }
+}
