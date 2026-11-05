@@ -1,6 +1,9 @@
 # 🛡️ TunisAssur Intelligence
 ### Insurance Performance, Customer Intelligence & Claims Risk Analytics
 
+### 🌐 **[▶ View the live interactive dashboard](https://bilelyengui1234-hub.github.io/TunisAssur-Intelligence/dashboard/)**
+*4 pages · KPIs, charts, hover tooltips, light/dark — built on the project's real data.*
+
 An **end-to-end Business Intelligence project** built on a fictional Tunisian insurer,
 *TunisAssur*. It covers the full lifecycle a BI/Data Analyst owns in practice: synthetic data
 engineering → data-quality handling → SQL → a star-schema semantic model → a documented DAX
